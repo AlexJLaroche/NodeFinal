@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Login - TIC TAC TOE</title>
+    <style>
+        body{
+            background-color: white;
+        }
+        input[type=text], input[type=password], input[type=email] {
+            width: 100%;
+            padding: 12px 20px;
+            margin: 8px 0;
+            display: inline-block;
+            border: 1px solid #ccc;
+            box-sizing: border-box;
+        }
+        .shadowbox {
+            width: 15em;
+            border: 1px solid #333;
+            box-shadow: 8px 8px 5px #444;
+            padding: 8px 12px;
+            font-family: "Calibri", sans-serif;
+            background: url("https://venngage-wordpress.s3.amazonaws.com/uploads/2018/09/Simple-Background-Images-10.png") no-repeat center;
+            background-size: cover;
+            margin: 10px
+        }
+        #container {
+            display: flex;              /* establish flex container */
+            flex-direction: row;     /* stack flex items vertically */
+            justify-content: center;    /* center items vertically, in this case */
+            align-items: center;        /* center items horizontally, in this case */
+            height: 600px;
+        }
+
+    </style>
+</head>
+<body>
+<h1 style="text-align: center; font-family: Impact,sans-serif;">TIC TAC TOE</h1>
+<div id="container">
+    <div class="shadowbox">
+        <form method="POST" action="/register">
+            <h1>Register</h1>
+            <label>Username:<input type="text" name="username" required></label>
+            <br>
+            <label>Email:<input type="email" name="email" required></label>
+            <br>
+            <label>Password:<input type ="password" name="password" required></label>
+            <br>
+            <input type="submit" value="Submit">
+        </form>
+    </div>
+    <div class="shadowbox">
+        <form method="POST" action="/login">
+            <h1>Login</h1>
+            <label>Username:<input type="text" name="username" required></label>
+            <br>
+            <label>Password:<input type ="password" name="password" required></label>
+            <br>
+            <input type="submit" value="Submit">
+        </form>
+    </div>
+</div>
+</body>
+</html>

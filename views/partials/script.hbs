@@ -1,0 +1,155 @@
+<script>
+    var origBoard;
+    const humanPlayer = 'O';
+    const AiPlayer = 'X';
+    const winCombos = [
+        [0, 1, 2],
+        [3, 4, 5],
+        [6, 7, 8],
+        [0, 3, 6],
+        [1, 4, 7],
+        [2, 5, 8],
+        [0, 4, 8],
+        [2, 4, 6]
+    ];
+    const saved = {};
+
+    const gamesavetest = {0:"O", 1:"X", 2:"O", 3:"X",4:"",5:"",6:"",7:"",8:""};
+
+    const cells = document.querySelectorAll('.cell');
+    startGame();
+
+    function startGame() {
+        document.querySelector(".endgame").style.display = "none";
+        origBoard = Array.from(Array(9).keys());
+        for (var i = 0; i < cells.length; i++) {
+            cells[i].innerText = '';
+            cells[i].style.removeProperty('background-color');
+            cells[i].addEventListener('click', turnClick, false);
+        }
+    }
+
+    function turnClick(square){
+        if (typeof origBoard[square.target.id] === 'number') {
+            turn(square.target.id, humanPlayer);
+            if(!checkTie() && checkWin(origBoard, humanPlayer) === null)
+                turn(bestSpot(), AiPlayer);
+        }
+    }
+
+    function turn(squareId, player) {
+        origBoard[squareId] = player;
+        document.getElementById(squareId).innerText = player;
+        let gameWon = checkWin(origBoard, player);
+        if (gameWon) gameOver(gameWon)
+    }
+
+    function checkWin(board, player) {
+      // console.log(board);
+
+      var p1 = function winList (acc, players, index){
+          if (players === player) {
+               return acc.concat(index)
+          } else
+               return acc
+      };
+
+      var playedMoves = board.reduce(p1, []);
+      var gameWon = null;
+
+      for(let [index, win] of winCombos.entries()) {
+          if (win.every(elem => playedMoves.indexOf(elem) > -1)) {
+              gameWon = {index: index, player: player};
+              break;
+          }
+      }
+      return gameWon;
+    }
+
+    function gameOver(gameWon) {
+        for (let index of winCombos[gameWon.index]) {
+            var gameWinner = function winner() {
+                if(gameWon.player === humanPlayer){
+                    document.querySelector(".endgame").style.backgroundColor = "green";
+                    return "green"
+                }else {
+                    document.querySelector(".endgame").style.backgroundColor = "red";
+                    return "red"
+
+                }
+            };
+            document.getElementById(index).style.backgroundColor = gameWinner();
+        }
+        for (var i = 0; i <= 8; i++) {
+            cells[i].removeEventListener('click', turnClick, false)
+        }
+        var winnerTitle = function isWinner() {
+            if(gameWon.player === humanPlayer){
+                return "You WIN!!\nWinner: YOU"
+            } else {
+                return "You Lose :(\nWinner: AI"
+            }
+
+        };
+
+        declareWinner(winnerTitle());
+    }
+
+    function emptySquares() {
+        return origBoard.filter(s => typeof s === 'number');
+    }
+
+    function bestSpot() {
+        return emptySquares()[0];
+    }
+
+    function checkTie() {
+        if (emptySquares().length === 0 && checkWin(origBoard, humanPlayer) === null && checkWin(origBoard, AiPlayer) === null) {
+            for (var i =0; i < cells.length; i++) {
+                cells[i].style.backgroundColor = 'grey';
+                cells[i].removeEventListener('click', turnClick, false);
+                document.querySelector(".endgame").style.backgroundColor = "grey"
+            }
+            declareWinner("Tie Game!");
+            return true;
+        }
+        return false;
+    }
+
+    function declareWinner(who) {
+        document.querySelector(".endgame").style.display = "block";
+        document.querySelector(".endgame .text").innerText = who;
+    }
+
+    function saveGame(){
+        for (var i = 0; i < cells.length; i++) {
+            if( cells[i].innerHTML === 'X') {
+               saved[cells[i].id] = "X"
+            }
+            if( cells[i].innerHTML === 'O') {
+                saved[cells[i].id] = "O"
+            }
+            if( cells[i].innerHTML === '') {
+                saved[cells[i].id] = ""
+            }
+        }
+        if (confirm('Are you sure you want to save this thing into the database?')) {
+            return saved
+        }
+    }
+
+    function loadGame() {
+        startGame();
+        for(var i = 0; i <= 8; i++) {
+            if (saved[i] === 'X') {
+                document.getElementById(i).innerText = 'X';
+                origBoard[i] = "X"
+            }
+            if (saved[i] === 'O') {
+                document.getElementById(i).innerText = 'O';
+                origBoard[i] = "O"
+            }
+        }
+
+    }
+</script>
